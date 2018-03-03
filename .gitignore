@@ -24,3 +24,4 @@ yarn-error.log*
 yarn.lock
 
 api/package-lock.json
+api/yarn.lock

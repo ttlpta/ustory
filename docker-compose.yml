@@ -15,6 +15,7 @@ services:
       - "6969:6969"
     volumes:
       - ./api:/usr/src/app
+      - /usr/src/app/node_modules
     links:
       - mongodb #Need to link to mongodb container to run same network
     depends_on:

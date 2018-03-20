@@ -6,7 +6,7 @@ import axios from 'axios';
 import reducers from '../reducers';
 
 const client = axios.create({
-  baseURL: 'http://10.1.20.2:9090',
+  baseURL: 'http://localhost:6969',
   responseType: 'json',
   timeout: 5000,
 });

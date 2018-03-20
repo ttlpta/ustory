@@ -1,6 +1,32 @@
 import React, { Component } from "react";
 
+import ErrorMsg from '../ErrorMsg';
+import withConnect from './withConnect';
+
 class LoginDialog extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      lEmail : '',
+      lPassword: '',
+      rEmail: '',
+      rPassword: '',
+    }
+  }
+
+  handleChangeInput = e => {
+    this.setState({
+      [e.target.name] : e.target.value
+    });
+  }
+
+  onRegist = () => {
+    const email = this.state.rEmail;
+    const password = this.state.rPassword;
+
+    this.props.regist({ email, password });
+  }
+
   render() {
     return (
       <div id="myModal" className="modal fade" role="dialog">
@@ -12,6 +38,7 @@ class LoginDialog extends Component {
             <label htmlFor="tab-2" className="tab">Đăng ký</label>
             <input id="tab-3" type="radio" name="tab" className="ustory-login" />
             <label htmlFor="tab-3" className="tab" />
+            <ErrorMsg msg={'aadasd'}/>
             <div className="login-form">
               <div className="sign-in-htm">
                 <div className="group">
@@ -57,26 +84,23 @@ class LoginDialog extends Component {
               <div className="sign-up-htm">
                 <div className="group">
                   <label htmlFor="user" className="label">Email</label>
-                  <input className="user" type="text" className="input" />
+                  <input className="user input" type="text" name="rEmail" onChange={ this.handleChangeInput }/>
                 </div>
                 <div className="group">
-                  <label htmlFor="pass" className="label">Password</label>
-                  <input className="pass" type="password" className="input" data-type="password" />
+                  <label htmlFor="pass" className="label">Mật khẩu</label>
+                  <input className="pass input" 
+                    type="password" 
+                    data-type="password"
+                    name="rPassword"
+                    onChange={ this.handleChangeInput }
+                  />
                 </div>
                 <div className="group">
-                  <label htmlFor="pass" className="label">Repeat Password</label>
-                  <input className="pass" type="password" className="input" data-type="password" />
-                </div>
-                <div className="group">
-                  <label htmlFor="pass" className="label">Email Address</label>
-                  <input className="pass" type="text" className="input" />
-                </div>
-                <div className="group">
-                  <input type="submit" className="button" defaultValue="Sign Up" />
+                  <input type="button" className="button" defaultValue="Đăng ký" onClick={ this.onRegist } />
                 </div>
                 <div className="hr" />
                 <div className="foot-lnk">
-                  <label htmlFor="tab-1">Already Member?</label>
+                  <label htmlFor="tab-1">Bạn đã có tài khoản?</label>
                 </div>
               </div>
             </div>
@@ -87,5 +111,5 @@ class LoginDialog extends Component {
   }
 }
   
-export default LoginDialog;
+export default withConnect(LoginDialog);
   

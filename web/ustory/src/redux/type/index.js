@@ -1,1 +1,1 @@
-placeholder
+export const REGIST_USER = 'REGIST_USER';

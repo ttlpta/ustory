@@ -4,7 +4,6 @@ import thunkMiddleware from 'redux-thunk';
 import axios from 'axios';
 
 import reducers from '../reducers';
-
 const client = axios.create({
   baseURL: 'http://localhost:6969',
   responseType: 'json',

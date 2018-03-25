@@ -13,3 +13,15 @@ export const initCarousel = () => {
     items : 3,
   });
 }
+
+export const showModal = (idElement) => {
+  $(`#${idElement}`).modal('show');
+};
+
+export const hideModal = (idElement) => {
+  $(`#${idElement}`).modal('hide');
+}
+
+export const alert = (msg, type = 'success') => {
+  $.notify(msg, type);
+};

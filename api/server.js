@@ -10,8 +10,7 @@ mongoose.connect('mongodb://mongodb/ustory');
 // Constants
 const PORT = 6969;
 const HOST = '0.0.0.0';
-
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   app.get('/', (req, res) => res.send('UStory is runningggg......'));

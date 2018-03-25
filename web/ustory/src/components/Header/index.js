@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 
+import withConenct from './withConnect';
+
 class Header extends Component {
+  constructor(props){
+    super(props);
+  }
+
   render() {
     return (
       <header>
@@ -11,8 +17,29 @@ class Header extends Component {
               <div className="col-md-4 logo-container">
                 <img src="images/ustory-logo.png" alt="UStory Logo" />
               </div>
-              <div className="col-md-4 right-col">
-                <a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" className="login-link">Đăng nhập</a>
+              <div className="col-md-4">
+                {
+                  this.props.profile.isLogin && 
+                  <div className="dropdown">
+                    <div className="dropdown-toggle" 
+                      id="dropdownMenu1" 
+                      data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="true">
+                      <img className="avatar" src='./images/no_user.png'/>{this.props.profile.nickname}
+                    </div>
+                    <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                      <li><a href="#">Action</a></li>
+                      <li><a href="#">Another action</a></li>
+                      <li><a href="#">Something else here</a></li>
+                      <li role="separator" className="divider"></li>
+                      <li><a href="#">Separated link</a></li>
+                    </ul>
+                  </div>
+                }
+                {
+                  ! this.props.profile.isLogin &&
+                  <a href="javascript:void(0)" data-toggle="modal" data-target="#loginModal" className="login-link">Đăng nhập</a>
+                }
               </div>
             </div>
           </div>
@@ -36,5 +63,5 @@ class Header extends Component {
   }
 }
   
-export default Header;
+export default withConenct(Header);
   

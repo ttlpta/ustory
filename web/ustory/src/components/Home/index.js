@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
 import LoginDialog from "../LoginDialog";
+import NoticeDialog from "../NoticeDialog";
 
 import { initCarousel } from '../../utils/jquery';
 
@@ -412,7 +413,7 @@ class Home extends Component {
 										<div className="heading"><h4>Calendar</h4></div>
 										<div className="content">
 											<center><form role="form">        
-													<div className>
+													<div>
 														<div className="input-group date form_date" data-date data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">              </div>
 														<input type="hidden" id="dtp_input2" defaultValue /><br />
 													</div>

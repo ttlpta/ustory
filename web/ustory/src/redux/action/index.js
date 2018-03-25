@@ -9,5 +9,20 @@ export const regist = user => {
     }
   };
   
-  return dispatch => dispatch({ type : types.REGIST_USER, payload });
+  return dispatch => dispatch({ type : types.REGISTER_USER, payload });
+}
+
+export const getProfile = id => {
+  const token = localStorage.getItem('ustory_token');
+  const payload = {
+    request : {
+      url : 'user/detail',
+      params : { id },
+      headers: {
+        'Authorization' : token
+      }
+    }
+  }
+
+  return dispatch => dispatch({ type : types.PROFILE_USER, payload });
 }

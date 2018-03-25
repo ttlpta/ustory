@@ -1,1 +1,2 @@
-export const REGIST_USER = 'REGIST_USER';
+export const REGISTER_USER = 'REGISTER_USER';
+export const PROFILE_USER = 'PROFILE_USER';

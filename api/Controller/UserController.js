@@ -1,16 +1,22 @@
 const _ = require('lodash');
+const jwt = require('jsonwebtoken');
+const configs = require('../configs');
 
 module.exports = (app, mongoose) => {
   const userModel = require('../Model/UserModel')(mongoose);
 
   app.post('/user/regist', (req, res) => {
     const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
-    const user = new userModel({...req.body, password : base64Pw });
-    user.save((err) => {
+    const token = jwt.sign({ email : req.body.email }, configs.jwtToken, {
+      expiresIn: configs.jwtExpiredTine // expires in 24 hours
+    });
+
+    const user = new userModel({...req.body, password : base64Pw, token });
+    user.save((err, userData) => {
       if(err){
         return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
       }
-      return res.json({success: true});
+      return res.json({success: true, data : { token, id : userData._id }});
     });
   });
 
@@ -35,4 +41,23 @@ module.exports = (app, mongoose) => {
       });
     });
   })
+
+  app.get('/user/detail', (req, res) => {
+    const token = req.get('Authorization');
+    try {
+      const decoded = jwt.verify(token, configs.jwtToken);
+      const email = decoded.email;
+      userModel.findOne({ _id : req.query.id })
+        .select('id nickname email token books bookmark')
+        .exec((err, user) => {
+        if(err) return res.status(400).end();
+        if(user.email != decoded.email) return res.status(400).end();
+        
+        return res.json({ success: true, data: user });
+      });
+    } catch(err) {
+      console.log(err);
+      return res.status(403).end();
+    }
+  });
 }

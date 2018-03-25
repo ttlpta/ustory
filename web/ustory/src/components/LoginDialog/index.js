@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import ErrorMsg from '../ErrorMsg';
 import withConnect from './withConnect';
+import * as validate from '../../utils/validate';
+import * as jquery from '../../utils/jquery';
 
 class LoginDialog extends Component {
   constructor(props) {
@@ -11,6 +13,20 @@ class LoginDialog extends Component {
       lPassword: '',
       rEmail: '',
       rPassword: '',
+      errMsg: ''
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.register.isLoading && !nextProps.register.isLoading) {
+      if(!nextProps.register.success) {
+        this.setState({ errMsg: nextProps.register.message});
+      } else {
+        jquery.hideModal('loginModal');
+        jquery.alert('Bạn đã đăng kí thành công');
+        localStorage.setItem('ustory_token', nextProps.register.data.token);
+        this.props.getProfile(nextProps.register.data.id);
+      }
     }
   }
 
@@ -23,13 +39,39 @@ class LoginDialog extends Component {
   onRegist = () => {
     const email = this.state.rEmail;
     const password = this.state.rPassword;
+    const nickname = this.state.rName;
+    if(!nickname){
+      this.setState({ errMsg: 'Bạn chưa điền nickname' });
+      return;
+    }
 
-    this.props.regist({ email, password });
+    if(!email){
+      this.setState({ errMsg: 'Bạn chưa điền email' });
+      return;
+    }
+
+    if(!validate.validateEmail(email)){
+      this.setState({ errMsg: 'Định dạng Email chưa đúng' });
+      return;
+    }
+    
+    if(!password) {
+      this.setState({ errMsg: 'Bạn chưa điền mật khẩu'});
+      return;
+    }
+
+    if(!validate.validateLengthText(password)) {
+      this.setState({ errMsg: 'Mật khẩu quá ngắn'});
+      return;
+    }
+      
+
+    this.props.regist({ email, password, nickname });
   }
 
   render() {
     return (
-      <div id="myModal" className="modal fade" role="dialog">
+      <div id="loginModal" className="modal fade" role="dialog">
         <div className="login-wrap">
           <div className="login-html">
             <input id="tab-1" type="radio" name="tab" className="sign-in" defaultChecked />
@@ -38,7 +80,7 @@ class LoginDialog extends Component {
             <label htmlFor="tab-2" className="tab">Đăng ký</label>
             <input id="tab-3" type="radio" name="tab" className="ustory-login" />
             <label htmlFor="tab-3" className="tab" />
-            <ErrorMsg msg={'aadasd'}/>
+            <ErrorMsg msg={ this.state.errMsg }/>
             <div className="login-form">
               <div className="sign-in-htm">
                 <div className="group">
@@ -82,6 +124,10 @@ class LoginDialog extends Component {
                 </div>
               </div>
               <div className="sign-up-htm">
+                <div className="group">
+                  <label htmlFor="user" className="label">Nickname</label>
+                  <input className="user input" type="text" name="rName" onChange={ this.handleChangeInput }/>
+                </div>
                 <div className="group">
                   <label htmlFor="user" className="label">Email</label>
                   <input className="user input" type="text" name="rEmail" onChange={ this.handleChangeInput }/>

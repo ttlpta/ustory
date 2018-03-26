@@ -60,4 +60,8 @@ module.exports = (app, mongoose) => {
       return res.status(403).end();
     }
   });
+
+  app.put('/user/loginFb', (req, res) => {
+    
+  });
 }

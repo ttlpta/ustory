@@ -4,7 +4,8 @@ import * as type from "../type";
 
 const defaultState = {
   profile : { isLoading: false, isLogin : false },
-  register : { isLoading: false, success : false, message : '' }
+  register : { isLoading: false, success : false, message : '' },
+  loginfb : { isLoading: false }
 };
 
 export default (state = defaultState , action) => {
@@ -15,6 +16,13 @@ export default (state = defaultState , action) => {
       break;
     case type.PROFILE_USER + '_SUCCESS' : 
       state = {...state, 
+        profile : { 
+          ...state.profile, isLoading: false, isLogin: action.payload.data.success, ...action.payload.data.data
+        }}
+      break;
+    case type.LOGINFB_USER + '_SUCCESS' : 
+      state = {...state, 
+        loginfb : { isLoading : false },
         profile : { 
           ...state.profile, isLoading: false, isLogin: action.payload.data.success, ...action.payload.data.data
         }}

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import FbLoginButton from "../FbLoginButton";
 import ErrorMsg from '../ErrorMsg';
 import withConnect from './withConnect';
 import * as validate from '../../utils/validate';
@@ -84,7 +85,7 @@ class LoginDialog extends Component {
             <div className="login-form">
               <div className="sign-in-htm">
                 <div className="group">
-                  <a href="#" className="button login-fb">Đăng nhập bằng Facebook</a>
+                  <FbLoginButton />
                 </div>
                 <div className="group">
                   <a href="#" className="button login-gg">Đăng nhập bằng Google</a>

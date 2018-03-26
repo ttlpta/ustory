@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
 import LoginDialog from "../LoginDialog";
-import NoticeDialog from "../NoticeDialog";
 
 import { initCarousel } from '../../utils/jquery';
 

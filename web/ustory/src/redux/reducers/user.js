@@ -22,10 +22,8 @@ export default (state = defaultState , action) => {
       break;
     case type.LOGINFB_USER + '_SUCCESS' : 
       state = {...state, 
-        loginfb : { isLoading : false },
-        profile : { 
-          ...state.profile, isLoading: false, isLogin: action.payload.data.success, ...action.payload.data.data
-        }}
+        loginfb : { isLoading : false, ...action.payload.data },
+      }
       break;
     default:
       const actionType = _.toLower(action.type);

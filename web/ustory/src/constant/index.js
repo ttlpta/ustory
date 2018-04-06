@@ -1,1 +1,1 @@
-placeholder
+export const FB_APP_ID = '112974009136222';

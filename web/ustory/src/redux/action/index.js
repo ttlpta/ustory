@@ -29,9 +29,11 @@ export const getProfile = id => {
 
 export const loginFb = user => {
   const payload = {
-    url: 'urer/loginFb',
-    data: user,
-    method: 'PUT'
+    request : {
+      url: 'user/loginFb',
+      data: user,
+      method: 'PUT'
+    }
   }
 
   return dispatch => dispatch({ type: types.LOGINFB_USER, payload });

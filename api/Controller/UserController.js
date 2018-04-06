@@ -4,6 +4,12 @@ const configs = require('../configs');
 
 module.exports = (app, mongoose) => {
   const userModel = require('../Model/UserModel')(mongoose);
+  const saveUserCb = (err, userData) => {
+    if(err){
+      return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
+    }
+    return res.json({success: true, data : { token, id : userData._id }});
+  };
 
   app.post('/user/regist', (req, res) => {
     const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
@@ -12,12 +18,7 @@ module.exports = (app, mongoose) => {
     });
 
     const user = new userModel({...req.body, password : base64Pw, token });
-    user.save((err, userData) => {
-      if(err){
-        return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
-      }
-      return res.json({success: true, data : { token, id : userData._id }});
-    });
+    user.save(saveUserCb);
   });
 
   app.post('/user/login', (req, res) => {
@@ -61,7 +62,20 @@ module.exports = (app, mongoose) => {
     }
   });
 
-  app.put('/user/loginFb', (req, res) => {
-    
+  app.put('/user/loginFb', async (req, res) => {
+    const { email, nickname, fbId } = req.body;
+    userModel.findOne({ email, fbId })
+      .select('id token')
+      .exec((err, userData) => {
+        if(err) return res.status(400).end();
+        if(userData)
+          return res.json({ success: true, data: { token : userData.token, id : userData._id } });
+
+        const token = jwt.sign({ email : req.body.email }, configs.jwtToken, {
+          expiresIn: configs.jwtExpiredTine // expires in 24 hours
+        });
+        const user = new userModel({ ...req.body, token, password: 'na' });
+        user.save(saveUserCb);
+      });
   });
 }

@@ -14,6 +14,7 @@ export const regist = user => {
 
 export const getProfile = id => {
   const token = localStorage.getItem('ustory_token');
+  console.log('--2--', token);  
   const payload = {
     request : {
       url : 'user/detail',

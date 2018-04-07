@@ -25,7 +25,7 @@ class Header extends Component {
                       id="dropdownMenu1" 
                       data-toggle="dropdown"
                       aria-haspopup="true" aria-expanded="true">
-                      <img className="avatar" src='./images/no_user.png'/>{this.props.profile.nickname}
+                      <img className="avatar" src={ this.props.profile.avatar ? this.props.profile.avatar : './images/no_user.png' }/>{this.props.profile.nickname}
                     </div>
                     <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
                       <li><a href="#">Action</a></li>

@@ -16,6 +16,7 @@ class FbLoginButton extends Component {
         this.setState({ errMsg: nextProps.loginFbResult.message});
       } else {
         jquery.hideModal('loginModal');
+        console.log('--1--', nextProps.loginFbResult.data.token);
         localStorage.setItem('ustory_token', nextProps.loginFbResult.data.token);
         this.props.getProfile(nextProps.loginFbResult.data.id);
       }
@@ -36,9 +37,9 @@ class FbLoginButton extends Component {
     e.preventDefault();
     window.FB.login( response => {
       if (response.status === 'connected') {
-        window.FB.api('/me?fields=id,name,email', res => {
+        window.FB.api('/me?fields=id,name,email,picture{url}', res => {
           const email = _.isUndefined(res.email) ? '' : res.email;
-          this.props.loginFb({ email, nickname : res.name, fbId : res.id });
+          this.props.loginFb({ email, nickname : res.name, fbId : res.id, avatar : res.picture.data.url });
         });
       }
     }, {scope: 'public_profile,email'});

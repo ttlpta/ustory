@@ -1,24 +1,22 @@
+const util = require('util');
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
-const configs = require('../configs');
+const helpers = require('../helper');
 
 module.exports = (app, mongoose) => {
   const userModel = require('../Model/UserModel')(mongoose);
-  const saveUserCb = (err, userData) => {
-    if(err){
+
+  app.post('/user/regist', async (req, res) => {
+    try{
+      const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
+      const token = helpers.getJwtToken(req.body.email);
+      const user = new userModel({...req.body, password : base64Pw, token });
+      const userSaved = await user.save();
+      
+      return res.json({success: true, data : { token, id : userSaved._id }});
+    } catch(err) {
       return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
     }
-    return res.json({success: true, data : { token, id : userData._id }});
-  };
 
-  app.post('/user/regist', (req, res) => {
-    const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
-    const token = jwt.sign({ email : req.body.email }, configs.jwtToken, {
-      expiresIn: configs.jwtExpiredTine // expires in 24 hours
-    });
-
-    const user = new userModel({...req.body, password : base64Pw, token });
-    user.save(saveUserCb);
   });
 
   app.post('/user/login', (req, res) => {
@@ -43,19 +41,16 @@ module.exports = (app, mongoose) => {
     });
   })
 
-  app.get('/user/detail', (req, res) => {
+  app.get('/user/detail', async (req, res) => {
     const token = req.get('Authorization');
     try {
-      const decoded = jwt.verify(token, configs.jwtToken);
+      const decoded = helpers.verifyJwtToken(token);
       const email = decoded.email;
-      userModel.findOne({ _id : req.query.id })
-        .select('id nickname email token books bookmark')
-        .exec((err, user) => {
-        if(err) return res.status(400).end();
-        if(user.email != decoded.email) return res.status(400).end();
-        
-        return res.json({ success: true, data: user });
-      });
+      const user = await userModel.findOne({ _id : req.query.id })
+        .select('id nickname email token books bookmark avatar')
+        .exec();
+      
+      return (user.email != decoded.email) ? res.status(400).end() : res.json({ success: true, data: user });
     } catch(err) {
       console.log(err);
       return res.status(403).end();
@@ -64,18 +59,18 @@ module.exports = (app, mongoose) => {
 
   app.put('/user/loginFb', async (req, res) => {
     const { email, nickname, fbId } = req.body;
-    userModel.findOne({ email, fbId })
-      .select('id token')
-      .exec((err, userData) => {
-        if(err) return res.status(400).end();
-        if(userData)
-          return res.json({ success: true, data: { token : userData.token, id : userData._id } });
-
-        const token = jwt.sign({ email : req.body.email }, configs.jwtToken, {
-          expiresIn: configs.jwtExpiredTine // expires in 24 hours
-        });
-        const user = new userModel({ ...req.body, token, password: 'na' });
-        user.save(saveUserCb);
-      });
+    try {
+      const userData = await userModel.findOne({ email, fbId }).select('id token').exec();
+      const token = helpers.getJwtToken(req.body.email);
+      if(userData)
+        return res.json({ success: true, data: { token, id : userData._id } });
+      
+      const user = new userModel({ ...req.body, token, password: 'na' });
+      const userSaved = await user.save();
+      
+      return res.json({success: true, data : { token, id : userSaved._id }});
+    } catch(err) {
+      return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
+    }
   });
 }

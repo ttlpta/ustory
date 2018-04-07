@@ -5,7 +5,8 @@ import * as type from "../type";
 const defaultState = {
   profile : { isLoading: false, isLogin : false },
   register : { isLoading: false, success : false, message : '' },
-  loginfb : { isLoading: false }
+  loginfb : { isLoading: false },
+  login : { isLoading: false, success : false, message : '' }
 };
 
 export default (state = defaultState , action) => {
@@ -23,6 +24,11 @@ export default (state = defaultState , action) => {
     case type.LOGINFB_USER + '_SUCCESS' : 
       state = {...state, 
         loginfb : { isLoading : false, ...action.payload.data },
+      }
+      break;
+    case type.LOGIN_USER + '_SUCCESS' : 
+      state = {...state, 
+        login : { isLoading : false, ...action.payload.data },
       }
       break;
     default:

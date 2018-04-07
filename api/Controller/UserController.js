@@ -8,10 +8,10 @@ module.exports = (app, mongoose) => {
   app.post('/user/regist', async (req, res) => {
     try{
       const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
-      const token = helpers.getJwtToken(req.body.email);
-      const user = new userModel({...req.body, password : base64Pw, token });
+      const user = new userModel({...req.body, password : base64Pw });
       const userSaved = await user.save();
-      
+      const token = helpers.getJwtToken(userSaved._id);
+
       return res.json({success: true, data : { token, id : userSaved._id }});
     } catch(err) {
       return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
@@ -19,38 +19,41 @@ module.exports = (app, mongoose) => {
 
   });
 
-  app.post('/user/login', (req, res) => {
+  app.post('/user/login', async (req, res) => {
     const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
     const email = _.isUndefined(req.body.password) ? '' : req.body.email;
-    if(!email && !base64Pw){
-      return res.json({});
-    }
-    userModel.findOne({ email, password: base64Pw }, (err, user) => {
-      if(err) return res.status(500).end();
-      
+    const keepLogin = req.body.keepLogin;
+    if(!email && !base64Pw)
+      return res.json({ success: false, message: 'Email or password is invalid' });
+
+    try {
+      const user = await userModel.findOne({ email, password: base64Pw });
       if(_.isEmpty(user))
         return res.json({ success: false, message: 'Email or password is invalid' });
-
+      
+      const token = helpers.getJwtToken(user._id, keepLogin);
       return res.json({
         success: true,
-        user : {
+        data : {
           id: user._id,
-          email: user.email
+          token
         }
       });
-    });
+    } catch (err) {
+      return res.status(403).end();
+    }
   })
 
   app.get('/user/detail', async (req, res) => {
     const token = req.get('Authorization');
     try {
       const decoded = helpers.verifyJwtToken(token);
-      const email = decoded.email;
-      const user = await userModel.findOne({ _id : req.query.id })
+      const id = decoded.id;
+      const user = await userModel.findOne({ _id : id })
         .select('id nickname email token books bookmark avatar')
         .exec();
-      
-      return (user.email != decoded.email) ? res.status(400).end() : res.json({ success: true, data: user });
+        
+      return _.isEmpty(user) ? res.status(400).end() : res.json({ success: true, data: user });
     } catch(err) {
       console.log(err);
       return res.status(403).end();
@@ -61,11 +64,11 @@ module.exports = (app, mongoose) => {
     const { email, nickname, fbId } = req.body;
     try {
       const userData = await userModel.findOne({ email, fbId }).select('id token').exec();
-      const token = helpers.getJwtToken(req.body.email);
+      const token = helpers.getJwtToken(userData._id);
       if(userData)
         return res.json({ success: true, data: { token, id : userData._id } });
       
-      const user = new userModel({ ...req.body, token, password: 'na' });
+      const user = new userModel({ ...req.body, password: 'na' });
       const userSaved = await user.save();
       
       return res.json({success: true, data : { token, id : userSaved._id }});

@@ -12,13 +12,11 @@ export const regist = user => {
   return dispatch => dispatch({ type : types.REGISTER_USER, payload });
 }
 
-export const getProfile = id => {
+export const getProfile = () => {
   const token = localStorage.getItem('ustory_token');
-  console.log('--2--', token);  
   const payload = {
     request : {
       url : 'user/detail',
-      params : { id },
       headers: {
         'Authorization' : token
       }
@@ -38,4 +36,16 @@ export const loginFb = user => {
   }
 
   return dispatch => dispatch({ type: types.LOGINFB_USER, payload });
+}
+
+export const login = user => {
+  const payload = {
+    request : {
+      url : 'user/login',
+      data : user,
+      method: 'POST'
+    }
+  }
+
+  return dispatch => dispatch({ type: types.LOGIN_USER, payload });
 }

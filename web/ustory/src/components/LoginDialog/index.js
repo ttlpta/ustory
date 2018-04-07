@@ -12,6 +12,7 @@ class LoginDialog extends Component {
     this.state = {
       lEmail : '',
       lPassword: '',
+      lKeeplogin : false,
       rEmail: '',
       rPassword: '',
       errMsg: ''
@@ -26,7 +27,18 @@ class LoginDialog extends Component {
         jquery.hideModal('loginModal');
         jquery.alert('Bạn đã đăng kí thành công');
         localStorage.setItem('ustory_token', nextProps.register.data.token);
-        this.props.getProfile(nextProps.register.data.id);
+        this.props.getProfile();
+      }
+    }
+
+    if(this.props.loginResult.isLoading && !nextProps.loginResult.isLoading) {
+      if(!nextProps.loginResult.success) {
+        this.setState({ errMsg: nextProps.loginResult.message});
+      } else {
+        jquery.hideModal('loginModal');
+        jquery.alert('Bạn đã đăng nhập thành công');
+        localStorage.setItem('ustory_token', nextProps.loginResult.data.token);
+        this.props.getProfile();
       }
     }
   }
@@ -70,6 +82,16 @@ class LoginDialog extends Component {
     this.props.regist({ email, password, nickname });
   }
 
+  onLogin = () => {
+    const email = this.state.lEmail;
+    const password = this.state.lPassword;
+    const keeplogin = this.state.lKeeplogin;
+
+    this.props.login({ email, password, keeplogin });
+  }
+
+  
+
   render() {
     return (
       <div id="loginModal" className="modal fade" role="dialog">
@@ -103,18 +125,18 @@ class LoginDialog extends Component {
               <div className="ustory-htm">
                 <div className="group">
                   <label htmlFor="user" className="label">Email</label>
-                  <input className="user" type="text" className="input" />
+                  <input className="user" type="text" className="input" name="lEmail" onChange={ this.handleChangeInput }/>
                 </div>
                 <div className="group">
                   <label htmlFor="pass" className="label">Mật khẩu</label>
-                  <input className="pass" type="password" className="input" data-type="password" />
+                  <input className="pass" type="password" className="input" name="lPassword" data-type="password" onChange={ this.handleChangeInput }/>
                 </div>
                 <div className="group">
-                  <input id="check" type="checkbox" className="check" defaultChecked />
+                  <input id="check" type="checkbox" className="check" name="lKeeplogin" onChange={ () => this.setState( state => ({ lKeeplogin : !state.lKeeplogin })) }/>
                   <label htmlFor="check"><span className="icon" /> Lưu trạng thái đăng nhập</label>
                 </div>
                 <div className="group">
-                  <input type="submit" className="button" defaultValue="Đăng nhập" />
+                  <input type="button" onClick={ this.onLogin } className="button" defaultValue="Đăng nhập" />
                 </div>
                 <div className="foot-lnk">
                   <label htmlFor="tab-1">Quay lại</label>

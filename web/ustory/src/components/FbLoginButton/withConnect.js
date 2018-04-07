@@ -8,7 +8,7 @@ const withConnect = Component => {
 
   const dispatchToProps = dispatch => ({
     loginFb : user => dispatch(loginFb(user)),
-    getProfile : id => dispatch(getProfile(id)),
+    getProfile : () => dispatch(getProfile()),
   });
 
   return connect(stateToProps, dispatchToProps)(Component);

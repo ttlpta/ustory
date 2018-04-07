@@ -16,9 +16,8 @@ class FbLoginButton extends Component {
         this.setState({ errMsg: nextProps.loginFbResult.message});
       } else {
         jquery.hideModal('loginModal');
-        console.log('--1--', nextProps.loginFbResult.data.token);
         localStorage.setItem('ustory_token', nextProps.loginFbResult.data.token);
-        this.props.getProfile(nextProps.loginFbResult.data.id);
+        this.props.getProfile();
       }
     }
   }

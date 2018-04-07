@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const configs = require('./configs');
 
 module.exports = {
-  getJwtToken : email => {
-    return jwt.sign({ email }, configs.jwtToken, {
-      expiresIn: configs.jwtExpiredTine // expires in 24 hours
+  getJwtToken : (id, keepLogin) => {
+    return jwt.sign({ id }, configs.jwtToken, {
+      expiresIn: keepLogin ? configs.jwtExpiredLongTine : configs.jwtExpiredTine // expires in 24 hours
     });
   },
   verifyJwtToken : token => {

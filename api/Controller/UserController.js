@@ -55,7 +55,6 @@ module.exports = (app, mongoose) => {
         
       return _.isEmpty(user) ? res.status(400).end() : res.json({ success: true, data: user });
     } catch(err) {
-      console.log(err);
       return res.status(403).end();
     }
   });
@@ -64,14 +63,29 @@ module.exports = (app, mongoose) => {
     const { email, nickname, fbId } = req.body;
     try {
       const userData = await userModel.findOne({ email, fbId }).select('id token').exec();
-      const token = helpers.getJwtToken(userData._id);
       if(userData)
-        return res.json({ success: true, data: { token, id : userData._id } });
+        return res.json({ success: true, data: { token : helpers.getJwtToken(userData._id), id : userData._id } });
       
       const user = new userModel({ ...req.body, password: 'na' });
       const userSaved = await user.save();
       
-      return res.json({success: true, data : { token, id : userSaved._id }});
+      return res.json({success: true, data : { token : helpers.getJwtToken(userSaved._id), id : userSaved._id }});
+    } catch(err) {
+      return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
+    }
+  });
+
+  app.put('/user/logingg', async (req, res) => {
+    const { email, nickname, ggId } = req.body;
+    try {
+      const userData = await userModel.findOne({ email, ggId }).select('id').exec();
+      if(userData)
+        return res.json({ success: true, data: { token : helpers.getJwtToken(userData._id), id : userData._id } });
+      
+      const user = new userModel({ ...req.body, password: 'na' });
+      const userSaved = await user.save();
+      
+      return res.json({success: true, data : { token : helpers.getJwtToken(userSaved._id), id : userSaved._id }});
     } catch(err) {
       return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
     }

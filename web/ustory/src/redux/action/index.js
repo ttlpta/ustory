@@ -38,6 +38,18 @@ export const loginFb = user => {
   return dispatch => dispatch({ type: types.LOGINFB_USER, payload });
 }
 
+export const loginGg = user => {
+  const payload = {
+    request : {
+      url: 'user/logingg',
+      data: user,
+      method: 'PUT'
+    }
+  }
+
+  return dispatch => dispatch({ type: types.LOGINGG_USER, payload });
+}
+
 export const login = user => {
   const payload = {
     request : {

@@ -7,6 +7,7 @@ module.exports = mongoose => {
     lastname: String,
     nickname: String,
     fbId: String,
+    ggId: String,
     avatar: String,
     bookmark: Array,
     books: Array,

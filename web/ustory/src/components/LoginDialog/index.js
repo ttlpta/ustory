@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import FbLoginButton from "../FbLoginButton";
+import GgLoginButton from "../GgLoginButton";
 import ErrorMsg from '../ErrorMsg';
 import withConnect from './withConnect';
 import * as validate from '../../utils/validate';
@@ -90,18 +91,20 @@ class LoginDialog extends Component {
     this.props.login({ email, password, keeplogin });
   }
 
-  
+  onChangeTab = () => {
+    this.setState( state => { errMsg : '' } );
+  }  
 
   render() {
     return (
       <div id="loginModal" className="modal fade" role="dialog">
         <div className="login-wrap">
           <div className="login-html">
-            <input id="tab-1" type="radio" name="tab" className="sign-in" defaultChecked />
+            <input id="tab-1" type="radio" name="tab" className="sign-in" defaultChecked onChange={ this.onChangeTab }/>
             <label htmlFor="tab-1" className="tab">Đăng nhập</label>
-            <input id="tab-2" type="radio" name="tab" className="sign-up" />
+            <input id="tab-2" type="radio" name="tab" className="sign-up" onChange={ this.onChangeTab }/>
             <label htmlFor="tab-2" className="tab">Đăng ký</label>
-            <input id="tab-3" type="radio" name="tab" className="ustory-login" />
+            <input id="tab-3" type="radio" name="tab" className="ustory-login" onChange={ this.onChangeTab }/>
             <label htmlFor="tab-3" className="tab" />
             <ErrorMsg msg={ this.state.errMsg }/>
             <div className="login-form">
@@ -110,7 +113,8 @@ class LoginDialog extends Component {
                   <FbLoginButton />
                 </div>
                 <div className="group">
-                  <a href="#" className="button login-gg">Đăng nhập bằng Google</a>
+                  {/* <a href="#" className="button login-gg">Đăng nhập bằng Google</a> */}
+                  <GgLoginButton />
                 </div>
                 <div className="group">
                   <a href="javascript:void(0)" className="button login-ustory">

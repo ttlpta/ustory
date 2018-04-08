@@ -61,3 +61,18 @@ export const login = user => {
 
   return dispatch => dispatch({ type: types.LOGIN_USER, payload });
 }
+
+export const logout = () => {
+  const token = localStorage.getItem('ustory_token');
+  const payload = {
+    request : {
+      url : 'user/logout',
+      method: 'PUT',
+      headers: {
+        'Authorization' : token
+      }
+    }
+  }
+
+  return dispatch => dispatch({ type: types.LOGOUT_USER, payload });
+}

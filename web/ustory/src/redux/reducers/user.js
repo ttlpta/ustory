@@ -7,7 +7,8 @@ const defaultState = {
   register : { isLoading: false, success : false, message : '' },
   loginfb : { isLoading: false },
   logingg : { isLoading: false },
-  login : { isLoading: false, success : false, message : '' }
+  login : { isLoading: false, success : false, message : '' },
+  logout : { isLoading: false }
 };
 
 export default (state = defaultState , action) => {
@@ -35,6 +36,11 @@ export default (state = defaultState , action) => {
     case type.LOGIN_USER + '_SUCCESS' : 
       state = {...state, 
         login : { isLoading : false, ...action.payload.data },
+      }
+      break;
+    case type.LOGOUT_USER + '_SUCCESS' : 
+      state = {...state, 
+        logout : { isLoading : false, ...action.payload.data },
       }
       break;
     default:

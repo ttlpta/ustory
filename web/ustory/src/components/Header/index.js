@@ -7,6 +7,19 @@ class Header extends Component {
     super(props);
   }
 
+
+  componentWillReceiveProps(nextProps){
+    if(this.props.logoutResult.isLoading && !nextProps.logoutResult.isLoading && nextProps.logoutResult.success) {
+      localStorage.removeItem('ustory_token');
+      window.location.reload();
+    }
+  }
+
+  onLogout = e => {
+    e.preventDefault();
+    this.props.logout();
+  }
+
   render() {
     return (
       <header>
@@ -32,7 +45,7 @@ class Header extends Component {
                       <li><a href="#">Another action</a></li>
                       <li><a href="#">Something else here</a></li>
                       <li role="separator" className="divider"></li>
-                      <li><a href="#">Separated link</a></li>
+                      <li><a href="javascript:void(0)" onClick={ this.onLogout }>Logout</a></li>
                     </ul>
                   </div>
                 }

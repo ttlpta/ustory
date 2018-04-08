@@ -29,8 +29,6 @@ class Home extends Component {
 											<img src="images/1.jpg" alt="First slide" />
 											<div className="header-text hidden-xs">
 												<div className="col-md-12 text-center">
-													<h2>Aenean feugiat in ante et </h2>
-													<br />
 													<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h3>
 													<br />
 												</div>
@@ -40,8 +38,6 @@ class Home extends Component {
 											<img src="images/2.jpg" alt="Second slide" />
 											<div className="header-text hidden-xs">
 												<div className="col-md-12 text-center">
-													<h2>Aenean feugiat in ante et blandit. Vestibulum</h2>
-													<br />
 													<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h3>
 													<br />
 												</div>
@@ -51,8 +47,6 @@ class Home extends Component {
 											<img src="images/3.jpg" alt="Third slide" />
 											<div className="header-text hidden-xs">
 												<div className="col-md-12 text-center">
-													<h2>Curabitur tincidunt porta lorem vitae</h2>
-													<br />
 													<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h3>
 													<br />
 												</div>
@@ -69,11 +63,25 @@ class Home extends Component {
 							</div>
 							<div className="col-sm-4" >
 								<div id="owl-demo-1" className="owl-carousel">
-									<img src="images/slide-2.jpg" />
-									<img src="images/slide-1.jpg" />
-									<img src="images/slide-3.jpg" />
+									<div className="item">
+										<img src="images/slide-2.jpg" />
+											<div className="col-md-12 text-center">
+												<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h3>
+											</div>
+									</div>
+									<div className="item">
+										<img src="images/slide-2.jpg" />
+										<div className="col-md-12 text-center">
+											<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h3>
+										</div>
+									</div>
+									<div className="item">
+										<img src="images/slide-2.jpg" />
+										<div className="col-md-12 text-center">
+											<h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h3>
+										</div>
+									</div>
 								</div>
-								<img src="images/banner.jpg" />
 							</div>
 						</div>
 					</div>
@@ -313,30 +321,6 @@ class Home extends Component {
 											</form>
 										</div>
 									</div>
-									{/*-- Start Widget --*/}
-									<div className="widget wid-tags">
-										<div className="heading"><h4>Tags</h4></div>
-										<div className="content">
-											<a href="#">animals</a>
-											<a href="#">cooking</a>
-											<a href="#">countries</a>
-											<a href="#">home</a>
-											<a href="#">likes</a>
-											<a href="#">photo</a>
-											<a href="#">link</a>
-											<a href="#">video</a>
-											<a href="#">travel</a>
-											<a href="#">images</a>
-											<a href="#">love</a>
-											<a href="#">lists</a>
-											<a href="#">makeup</a>
-											<a href="#">media</a>
-											<a href="#">password</a>
-											<a href="#">pagination</a>
-											<a href="#">pictures</a>
-										</div>
-									</div>
-									{/*-- Start Widget --*/}
 									<div className="widget wid-comment">
 										<div className="heading"><h4>Top Comments</h4></div>
 										<div className="content">

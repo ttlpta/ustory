@@ -67,6 +67,8 @@ class Header extends Component {
               <li><a href="index.html">Truyện dài</a></li>
               <li><a href="index.html">Note</a></li>
               <li><a href="index.html">Ký sự</a></li>
+              <li><a href="index.html">Self-help</a></li>
+              <li><a href="index.html">Văn học</a></li>
             </ul>
           </div>
           <div className="col-md-2"></div>

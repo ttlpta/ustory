@@ -261,7 +261,7 @@ ul.pagination li a{color: #444;}
 .widget.wid-tweet{}
 .widget.wid-tweet p{margin: 0;}
 .widget.wid-tweet span{display: block;color: #999;}
-.widget.wid-tweet .tweet-item{border-bottom: 1px solid #ddd;padding: 5px;}
+.widget.wid-tweet .tweet-item{border-bottom: 1px solid #ddd;padding: 5px;display: grid;}
 .widget.wid-tweet .tweet-item:last-child{border-bottom: none; padding: 5px 0 0;}
 
 .widget.wid-tags{}

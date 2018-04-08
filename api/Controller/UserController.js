@@ -1,5 +1,6 @@
 const util = require('util');
 const _ = require('lodash');
+const configs = require('../configs');
 const helpers = require('../helper');
 
 module.exports = (app, mongoose) => {
@@ -8,7 +9,8 @@ module.exports = (app, mongoose) => {
   app.post('/user/regist', async (req, res) => {
     try{
       const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
-      const user = new userModel({...req.body, password : base64Pw });
+      const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
+      const user = new userModel({...req.body, password : base64Pw, expriedTime });
       const userSaved = await user.save();
       const token = helpers.getJwtToken(userSaved._id);
 
@@ -27,11 +29,16 @@ module.exports = (app, mongoose) => {
       return res.json({ success: false, message: 'Email or password is invalid' });
 
     try {
-      const user = await userModel.findOne({ email, password: base64Pw });
+      let user = await userModel.findOne({ email, password: base64Pw });
       if(_.isEmpty(user))
         return res.json({ success: false, message: 'Email or password is invalid' });
       
       const token = helpers.getJwtToken(user._id, keepLogin);
+      const expriedTime = keepLogin ? helpers.getCurrentUnixTime() + configs.jwtExpiredLongTine * 60 
+        : helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
+      user.set({ 'expriedTime' : expriedTime });
+      user = await user.save();
+
       return res.json({
         success: true,
         data : {
@@ -50,10 +57,10 @@ module.exports = (app, mongoose) => {
       const decoded = helpers.verifyJwtToken(token);
       const id = decoded.id;
       const user = await userModel.findOne({ _id : id })
-        .select('id nickname email token books bookmark avatar')
+        .select('id nickname email expriedTime books bookmark avatar')
         .exec();
         
-      return _.isEmpty(user) ? res.status(400).end() : res.json({ success: true, data: user });
+      return _.isEmpty(user) || helpers.isExpiredTime(user.expriedTime) ? res.status(400).end() : res.json({ success: true, data: user });
     } catch(err) {
       return res.status(403).end();
     }
@@ -66,7 +73,8 @@ module.exports = (app, mongoose) => {
       if(userData)
         return res.json({ success: true, data: { token : helpers.getJwtToken(userData._id), id : userData._id } });
       
-      const user = new userModel({ ...req.body, password: 'na' });
+      const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
+      const user = new userModel({ ...req.body, password: 'na', expriedTime });
       const userSaved = await user.save();
       
       return res.json({success: true, data : { token : helpers.getJwtToken(userSaved._id), id : userSaved._id }});
@@ -82,12 +90,26 @@ module.exports = (app, mongoose) => {
       if(userData)
         return res.json({ success: true, data: { token : helpers.getJwtToken(userData._id), id : userData._id } });
       
-      const user = new userModel({ ...req.body, password: 'na' });
+      const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
+      const user = new userModel({ ...req.body, password: 'na', expriedTime });
       const userSaved = await user.save();
       
       return res.json({success: true, data : { token : helpers.getJwtToken(userSaved._id), id : userSaved._id }});
     } catch(err) {
       return res.json({success: false, message: (err.code == 11000) ? 'Email is existed' : err.message});
+    }
+  });
+
+  app.put('/user/logout', async (req, res) => {
+    const token = req.get('Authorization');
+    try {
+      const decoded = helpers.verifyJwtToken(token);
+      const id = decoded.id;
+      const result = await userModel.update({ _id: id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
+      
+      return result.ok ? res.json({ success: true, data: {} }) : res.status(400).end();
+    } catch(err) {
+      return res.status(403).end();
     }
   });
 }

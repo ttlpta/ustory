@@ -9,5 +9,17 @@ module.exports = {
   },
   verifyJwtToken : token => {
     return jwt.verify(token, configs.jwtToken);
+  },
+  getCurrentUnixTime : () => {
+    const dateTime = Date.now();
+    const timestamp = Math.floor(dateTime / 1000);
+    
+    return timestamp;
+  },
+  isExpiredTime : unixTime => {
+    const dateTime = Date.now();
+    const timestamp = Math.floor(dateTime / 1000);
+
+    return unixTime < timestamp
   }
 }

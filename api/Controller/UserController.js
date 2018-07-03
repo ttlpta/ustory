@@ -62,31 +62,17 @@ UserController.prototype.login = async (req, res, next) => {
 }
 
 UserController.prototype.logingg = async (req, res, next) => {
-  const { email, nickname, ggId } = req.body;
+  const { email, ggId } = req.body;
   try {
-    const userData = await userModel.findOne({ email, ggId }).select('id').exec();
+    const userData = await userModel.findOne({ email }).select('id').exec();
     if(userData)
       return res.json(helpers.success({ token : helpers.getJwtToken(userData._id), id : userData._id }));
     
     const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
     const user = new userModel({ ...req.body, password: 'na', expriedTime });
     const userSaved = await user.save();
-    
+
     return res.json(helpers.success({ token : helpers.getJwtToken(userSaved._id), id : userSaved._id }));
-  } catch(err) {
-    return res.status(400).json(helpers.fail(err.code == 11000 ? 'Email is existed' : err.message));
-  }
-}
-
-UserController.prototype.regist = async (req, res, next) => {
-  try{
-    const base64Pw = _.isUndefined(req.body.password) ? '' : new Buffer(req.body.password).toString('base64');
-    const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
-    const user = new userModel({...req.body, password : base64Pw, expriedTime });
-    const userSaved = await user.save();
-    const token = helpers.getJwtToken(userSaved._id);
-
-    return res.json({success: true, data : { token, id : userSaved._id }});
   } catch(err) {
     return res.status(400).json(helpers.fail(err.code == 11000 ? 'Email is existed' : err.message));
   }

@@ -11,7 +11,7 @@ const userShema = mongoose.Schema({
   ggId: String,
   avatar: String,
   bookmark: Array,
-  books: Array,
+  type: Number,
 });
 
   module.exports = mongoose.model('User', userShema);

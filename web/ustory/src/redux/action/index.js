@@ -16,7 +16,7 @@ export const getProfile = () => {
   const token = localStorage.getItem('ustory_token');
   const payload = {
     request : {
-      url : 'user/detail',
+      url : 'user/auth/detail',
       headers: {
         'Authorization' : token
       }
@@ -66,7 +66,7 @@ export const logout = () => {
   const token = localStorage.getItem('ustory_token');
   const payload = {
     request : {
-      url : 'user/logout',
+      url : 'user/auth/logout',
       method: 'PUT',
       headers: {
         'Authorization' : token

@@ -22,6 +22,6 @@ module.exports = {
 
     return unixTime < timestamp
   },
-  success : ( data, code = 0 ) => { success: true, code , data },
-  fail : message => { message }
+  success : ( data, code = 0 ) => ({ success: true, code , data }),
+  fail : message => ({ message })
 }

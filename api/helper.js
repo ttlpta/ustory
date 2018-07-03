@@ -21,5 +21,7 @@ module.exports = {
     const timestamp = Math.floor(dateTime / 1000);
 
     return unixTime < timestamp
-  }
+  },
+  success : ( data, code = 0 ) => { success: true, code , data },
+  fail : message => { message }
 }

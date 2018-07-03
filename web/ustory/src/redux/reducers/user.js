@@ -45,8 +45,9 @@ export default (state = defaultState , action) => {
       break;
     default:
       const actionType = _.toLower(action.type);
+      const errMsg = _.isUndefined(action.error) ? '' : action.error.response.data.message;
       if(_.endsWith(actionType, '_user_fail')) {
-        state = {...state, [_.replace(actionType, '_user_fail', '')]: {isLoading: false, success: false}};
+        state = {...state, [_.replace(actionType, '_user_fail', '')]: {isLoading: false, success: false, message : errMsg}};
       }
       if(_.endsWith(actionType, '_user')) {
         state = {...state, [_.replace(actionType, '_user', '')]: {isLoading: true}};

@@ -1,7 +1,23 @@
 
 const user = require('./routes/user');
+const helpers = require('./helper');
 
 module.exports = app => {
+  app.use(function (req, res, next) {
+    if(req.path.includes('auth')) {
+      const token = req.get('Authorization');
+      if(!token)
+        return res.status(403).end();
+
+      try {
+        helpers.verifyJwtToken(token);
+      } catch(err) {
+        return res.status(403).json(err);
+      }
+    } 
+    next();
+  });
+
   app.use('/user', user);
 
   // if (app.get('env') === 'development') {

@@ -10,7 +10,13 @@ module.exports = app => {
         return res.status(403).end();
 
       try {
-        helpers.verifyJwtToken(token);
+        const decoded = helpers.verifyJwtToken(token);
+        var currentTime = Date.now() / 1000;
+        
+        if(decoded.exp < currentTime)
+          return res.status(403).end();
+
+        req.user_id = decoded.id;
       } catch(err) {
         return res.status(403).json(err);
       }

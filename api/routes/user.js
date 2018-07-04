@@ -10,5 +10,6 @@ router.post('/regist', userCtrl.regist);
 
 router.get('/auth/detail', userCtrl.detail);
 router.put('/auth/logout', userCtrl.logout);
+// router.put('/auth/profile/update', userCtrl.updateProfile);
 
 module.exports = router;

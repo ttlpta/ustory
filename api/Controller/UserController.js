@@ -21,19 +21,19 @@ UserController.prototype.regist = async (req, res, next) => {
 }
 
 UserController.prototype.loginFb = async (req, res, next) => {
-  const { email, fbId } = req.body;
+  const { email } = req.body;
   try {
-    const userData = await userModel.findOne({ email, fbId }).select('id token').exec();
+    const userData = await userModel.findOne({ email }).select('id token').exec();
     if(userData)
-      return res.json({ success: true, data: { token : helpers.getJwtToken(userData._id), id : userData._id } });
+      return res.json(helpers.success({ token : helpers.getJwtToken(userData._id), id : userData._id }));
     
     const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
-    const user = new userModel({ ...req.body, password: 'na', expriedTime });
+    const user = new userModel({ ...req.body, password: 'na', expriedTime, type : configs.NO_TYPE });
     const userSaved = await user.save();
     
     return res.json(helpers.success({ token : helpers.getJwtToken(userSaved._id), id : userSaved._id }));
   } catch(err) {
-    return res.status(400).json(helpers.fail(err.code == 11000 ? 'Email is existed' : err.message));
+    return res.status(400).json(helpers.fail(err.message));
   }
 }
 
@@ -62,43 +62,37 @@ UserController.prototype.login = async (req, res, next) => {
 }
 
 UserController.prototype.logingg = async (req, res, next) => {
-  const { email, ggId } = req.body;
+  const { email } = req.body;
   try {
     const userData = await userModel.findOne({ email }).select('id').exec();
     if(userData)
       return res.json(helpers.success({ token : helpers.getJwtToken(userData._id), id : userData._id }));
     
     const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
-    const user = new userModel({ ...req.body, password: 'na', expriedTime });
+    const user = new userModel({ ...req.body, password: 'na', expriedTime, type : configs.NO_TYPE });
     const userSaved = await user.save();
 
     return res.json(helpers.success({ token : helpers.getJwtToken(userSaved._id), id : userSaved._id }));
   } catch(err) {
-    return res.status(400).json(helpers.fail(err.code == 11000 ? 'Email is existed' : err.message));
+    return res.status(400).json(helpers.fail(err.message));
   }
 }
 
 UserController.prototype.detail = async (req, res, next) => {
-  const token = req.get('Authorization');
   try {
-    const decoded = helpers.verifyJwtToken(token);
-    const id = decoded.id;
-    const user = await userModel.findOne({ _id : id })
+    const user = await userModel.findOne({ _id : req.user_id })
       .select('id nickname email expriedTime books bookmark avatar')
       .exec();
       
-    return _.isEmpty(user) || helpers.isExpiredTime(user.expriedTime) ? res.status(400).end() : res.json({ success: true, data: user });
+    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
   } catch(err) {
     return res.status(400).end();
   }
 }
 
 UserController.prototype.logout = async (req, res, next) => {
-  const token = req.get('Authorization');
   try {
-    const decoded = helpers.verifyJwtToken(token);
-    const id = decoded.id;
-    const result = await userModel.update({ _id: id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
+    const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
     
     return result.ok ? res.json({ success: true, data: {} }) : res.status(400).end();
   } catch(err) {

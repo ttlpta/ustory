@@ -90,6 +90,16 @@ UserController.prototype.detail = async (req, res, next) => {
   }
 }
 
+UserController.prototype.updateProfile = async (req, res, next) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(req.user_id, { $set: req.body}, { new: true });
+    
+    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
+  } catch(err) {
+    return res.status(400).end();
+  }
+}
+
 UserController.prototype.logout = async (req, res, next) => {
   try {
     const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});

@@ -6,6 +6,7 @@ import ErrorMsg from '../ErrorMsg';
 import withConnect from './withConnect';
 import * as validate from '../../utils/validate';
 import * as jquery from '../../utils/jquery';
+import { CANDIDATE_TYPE } from '../../constant';
 
 class LoginDialog extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class LoginDialog extends Component {
       lKeeplogin : false,
       rEmail: '',
       rPassword: '',
+      rType: CANDIDATE_TYPE,
       errMsg: ''
     }
   }
@@ -54,6 +56,7 @@ class LoginDialog extends Component {
     const email = this.state.rEmail;
     const password = this.state.rPassword;
     const nickname = this.state.rName;
+    const type = this.state.rType;
     if(!nickname){
       this.setState({ errMsg: 'Bạn chưa điền nickname' });
       return;
@@ -80,7 +83,7 @@ class LoginDialog extends Component {
     }
       
 
-    this.props.regist({ email, password, nickname });
+    this.props.regist({ email, password, nickname, type });
   }
 
   onLogin = () => {
@@ -167,6 +170,12 @@ class LoginDialog extends Component {
                     name="rPassword"
                     onChange={ this.handleChangeInput }
                   />
+                </div>
+                <div className="group">
+                  <input type="radio" name="rType" value="2" onChange={ this.handleChangeInput } />
+                  &nbsp;Nhà tuyển dụng&nbsp;&nbsp;
+                  <input type="radio" name="rType" value="1" onChange={ this.handleChangeInput } />
+                  &nbsp;Ứng viên/ Freelancer
                 </div>
                 <div className="group">
                   <input type="button" className="button" defaultValue="Đăng ký" onClick={ this.onRegist } />

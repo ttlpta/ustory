@@ -445,8 +445,8 @@ class Home extends Component {
 					<Footer />
 				</div>
 			);
-		}
 	}
+}
   
 export default Home;
   

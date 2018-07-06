@@ -26,6 +26,22 @@ export const getProfile = () => {
   return dispatch => dispatch({ type : types.PROFILE_USER, payload });
 }
 
+export const updateProfile = data => {
+  const token = localStorage.getItem('ustory_token');
+  const payload = {
+    request : {
+      url : 'user/auth/detail',
+      data,
+      method: 'PUT',
+      headers: {
+        'Authorization' : token,
+      }
+    }
+  }
+
+  return dispatch => dispatch({ type : types.PROFILE_USER, payload });
+}
+
 export const loginFb = user => {
   const payload = {
     request : {

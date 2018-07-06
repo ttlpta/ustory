@@ -1,52 +1,75 @@
 import React, { Component } from "react";
 
-export default class Profile extends Component
+import { uploadImage } from '../../utils';
+import withConnect from "./withConnect";
+
+class Profile extends Component
 {
   constructor(props){
     super(props);
+    this.state = { 
+      avatar : '',
+      nickname: '', 
+      firstname: '', 
+      lastname: '', 
+      password: '', 
+      phone: '', 
+      city: '', 
+      cmnd: '', 
+      birthday: '', 
+      address : ''
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.profile);
   }
 
   readUrl = e => {
     const input = e.target;
     if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.readAsDataURL(input.files[0]);
-      reader.onload = ev => {
-        console.log(ev.target.result);
-        this.setState({
-          image: ev.target.result,
-        })
-      };
-      
+      let imgFormData = new FormData();
+      imgFormData.append('avatar', input.files[0], 'profile.jpg');
+      this.setState({ avatar : imgFormData });
     }
   }
 
-  handleSubmit = () => {
-    let type = 'image/jpeg';
-    let bin = atob(this.state.image.split(',')[1]);
-    let buffer = new Uint8Array(bin.length);
-    for(let i=0;i<bin.length;i++){
-      buffer[i] = bin.charCodeAt(i);
+  handleSubmit = async e => {
+    e.preventDefault();
+    const imageUrl = await uploadImage(this.state.avatar);
+    if(imageUrl) {
+      const data = { 
+        avatar : imageUrl,
+        nickname: this.state.nickname, 
+        firstname: this.state.firstname, 
+        lastname: this.state.lastname, 
+        password: this.state.password, 
+        phone: this.state.phone, 
+        city: this.state.city, 
+        cmnd: this.state.cmnd, 
+        birthday: this.state.birthday, 
+        address: this.state.address, 
+      };
+
+      this.props.updateProfile(data);
     }
-    let blob = new Blob([buffer.buffer], {type: type});
-    let imgFormData = new FormData()
-    imgFormData.append('file', blob, 'profile.jpg')
-    const data = {
-      avatar: imgFormData,
-      email : this.state.rEmail,
-      password : this.state.rPassword,
-      nickname : this.state.rName
-    }
+  }
+
+  onChangeInput = e => {
+    this.setState({
+      [e.target.name] : e.target.value
+    });
   }
 
   render(){
     return (
       <div>
-        <form onSubmit={ this.handleSubmit }>
+        <form method="post" onSubmit={ this.handleSubmit }>
           <label htmlFor="avatar">Avatar</label>
+          <img src={ this.state.avatar }/>
           <input type="file" name="avatar" onChange={ this.readUrl }/><br />
           <label htmlFor="nickname">Nickname</label>
-          <input type="text" name="nickname" onChange={ this.onChangeInput }/><br />
+          <input type="text" name="nickname" value={ this.state.nickname } onChange={ this.onChangeInput }/><br />
           <label htmlFor="firstname">Firstname</label>
           <input type="text" name="firstname" onChange={ this.onChangeInput }/><br />
           <label htmlFor="lastname">Lastname</label>
@@ -71,3 +94,5 @@ export default class Profile extends Component
     );
   };  
 }
+
+export default withConnect(Profile);

@@ -4,7 +4,7 @@ const configs = require('../configs');
 const helpers = require('../helper');
 const userModel = require('../Model/UserModel');
 
-var UserController = function () {};
+let UserController = function () {};
 
 UserController.prototype.regist = async (req, res, next) => {
   try{

@@ -4,7 +4,7 @@
 
 ===== RUN TO UPDATE NODE-MODULES ===
 
-sudo docker run api npm install
+https://stackoverflow.com/questions/26153686/how-do-i-run-a-command-on-an-already-existing-docker-container
 
 ===== POST structure ===========
 

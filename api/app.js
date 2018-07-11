@@ -1,7 +1,23 @@
+const multer = require('multer');
 
 const user = require('./routes/user');
 const helpers = require('./helper');
 
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads');
+  },
+  filename: function (req, file, callback) {
+    const mapType = {
+      'image/jpeg' : 'jpg',
+      'image/jpg' : 'jpg',
+      'image/png' : 'png',
+    }
+    callback(null, `${req.user_id}_${Date.now()}.${mapType[file.mimetype]}`);
+  }
+});
+
+const upload = multer({ storage : storage}).single('avatar');
 module.exports = app => {
   app.use(function (req, res, next) {
     if(req.path.includes('auth')) {
@@ -24,7 +40,18 @@ module.exports = app => {
     next();
   });
 
+  app.post('/auth/files', (req, res) => {
+    upload(req, res, function(err) {
+      filename = req.file.filename;
+      if(err) 
+        return res.status(400).end();
+
+      return res.json(helpers.success({ imageUrl : filename }));
+    });
+  });
+  
   app.use('/user', user);
+
 
   // if (app.get('env') === 'development') {
   //   app.use((err, req, res, next) => {

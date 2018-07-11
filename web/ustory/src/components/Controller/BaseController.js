@@ -10,6 +10,9 @@ class BaseController extends Component
     super(props);
   }
 
+  componentWillReceiveProps(nextProps) {
+  }
+
   componentWillMount() {
     const token = localStorage.getItem('ustory_token');
     if(token) {
@@ -23,7 +26,7 @@ class BaseController extends Component
 }
 
 const mapStateToProps = state => ({
-
+  profile : state.user.profile
 });
 
 const mapDispatchToProps = dispatch => ({

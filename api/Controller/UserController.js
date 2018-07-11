@@ -4,7 +4,7 @@ const configs = require('../configs');
 const helpers = require('../helper');
 const userModel = require('../Model/UserModel');
 
-var UserController = function () {};
+let UserController = function () {};
 
 UserController.prototype.regist = async (req, res, next) => {
   try{
@@ -84,6 +84,16 @@ UserController.prototype.detail = async (req, res, next) => {
       .select('id nickname email expriedTime books bookmark avatar')
       .exec();
       
+    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
+  } catch(err) {
+    return res.status(400).end();
+  }
+}
+
+UserController.prototype.updateProfile = async (req, res, next) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(req.user_id, { $set: req.body}, { new: true });
+
     return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
   } catch(err) {
     return res.status(400).end();
